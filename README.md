@@ -1,5 +1,7 @@
 
-# Subnet EVM
+# [DEPRECATED] - Subnet EVM
+
+Deprecation warning: This fork has been deprecated in favor of [ava-labs/subnet-evm](https://github.com/ava-labs/subnet-evm).
 
 [![Build + Test + Release](https://github.com/ava-labs/subnet-evm/actions/workflows/lint-tests-release.yml/badge.svg)](https://github.com/ava-labs/subnet-evm/actions/workflows/lint-tests-release.yml)
 [![CodeQL](https://github.com/ava-labs/subnet-evm/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ava-labs/subnet-evm/actions/workflows/codeql-analysis.yml)
