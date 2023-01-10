@@ -50,4 +50,4 @@ fi
 
 # Build Subnet EVM, which is run as a subprocess
 echo "Building Subnet EVM Version: $subnet_evm_version at $binary_path"
-go build -ldflags "-X github.com/ava-labs/subnet-evm/plugin/evm.GitCommit=$subnet_evm_commit -X github.com/ava-labs/subnet-evm/plugin/evm.Version=$subnet_evm_version $static_ld_flags" -o "$binary_path" "plugin/"*.go
+go build -ldflags "-X github.com/kingdom-studios/subnet-evm/plugin/evm.GitCommit=$subnet_evm_commit -X github.com/kingdom-studios/subnet-evm/plugin/evm.Version=$subnet_evm_version $static_ld_flags" -o "$binary_path" "plugin/"*.go
