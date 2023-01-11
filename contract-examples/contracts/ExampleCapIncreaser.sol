@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./ICapIncreaser.sol";
 
-// ExampleHelloWorld shows how the HelloWorld precompile can be used in a smart contract.
+// ExampleCapIncreaser shows how the CapIncreaser precompile can be used in a smart contract.
 contract ExampleCapIncreaser {
     address constant CAP_INCREASER_ADDRESS = 0x0300000000000000000000000000000000000000;
     ICapIncreaser capIncreaser = ICapIncreaser(CAP_INCREASER_ADDRESS);
@@ -13,8 +13,4 @@ contract ExampleCapIncreaser {
 
     // Cap is now at slot 7 hopefully.
     uint256 public cap = 125000000 ether; // We initialize the cap to 125 million ether.
-
-    function upgradeCap() public {
-        capIncreaser.upgradeCap();
-    }
 }

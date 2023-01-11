@@ -9,7 +9,7 @@ describe("ExampleCapIncreaser", function () {
     let capIncreaserContract: Contract
 
     before(async function () {
-        // Deploy Hello World Contract
+        // Deploy ExampleCapIncreaser Contract
         const ContractF: ContractFactory = await ethers.getContractFactory(
             "ExampleCapIncreaser"
         )
