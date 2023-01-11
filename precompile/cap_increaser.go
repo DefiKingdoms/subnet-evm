@@ -32,16 +32,12 @@ import (
 	"strings"
 
 	"github.com/ava-labs/subnet-evm/accounts/abi"
-	"github.com/ava-labs/subnet-evm/vmerrs"
-
 	"github.com/ethereum/go-ethereum/common"
 )
 
 const (
-	UpgradeCapGasCost uint64 = writeGasCostPerSlot
-
 	// CapIncreaserRawABI contains the raw ABI of CapIncreaser contract.
-	CapIncreaserRawABI = "[{\"inputs\":[],\"name\":\"upgradeCap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+	CapIncreaserRawABI = "[]"
 )
 
 // Singleton StatefulPrecompiledContract and signatures.
@@ -153,43 +149,10 @@ func (c *CapIncreaserConfig) Verify() error {
 	return nil
 }
 
-// PackUpgradeCap packs the include selector (first 4 func signature bytes).
-// This function is mostly used for tests.
-func PackUpgradeCap() ([]byte, error) {
-	return CapIncreaserABI.Pack("upgradeCap")
-}
-
-func upgradeCap(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
-	if remainingGas, err = deductGas(suppliedGas, UpgradeCapGasCost); err != nil {
-		return nil, 0, err
-	}
-	if readOnly {
-		return nil, remainingGas, vmerrs.ErrWriteProtection
-	}
-	// no input provided for this function
-
-	// Upgrade the cap of the CRYSTAL token.
-	currentState := accessibleState.GetStateDB()
-	CRYSTAL_ADDRESS := common.HexToAddress("0x52C84043CD9c865236f11d9Fc9F56aa003c1f922")
-	currentState.SetState(CRYSTAL_ADDRESS, common.HexToHash("0x7"), common.HexToHash("0xCECB8F27F4200F3A000000"))
-
-	// this function does not return an output, leave this one as is
-	packedOutput := []byte{}
-
-	// Return the packed output and the remaining gas
-	return packedOutput, remainingGas, nil
-}
-
 // createCapIncreaserPrecompile returns a StatefulPrecompiledContract with getters and setters for the precompile.
 
 func createCapIncreaserPrecompile(precompileAddr common.Address) StatefulPrecompiledContract {
 	var functions []*statefulPrecompileFunction
-
-	methodUpgradeCap, ok := CapIncreaserABI.Methods["upgradeCap"]
-	if !ok {
-		panic("given method does not exist in the ABI")
-	}
-	functions = append(functions, newStatefulPrecompileFunction(methodUpgradeCap.ID, upgradeCap))
 
 	// Construct the contract with no fallback function.
 	contract := newStatefulPrecompileWithFunctionSelectors(nil, functions)
