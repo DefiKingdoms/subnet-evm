@@ -35,6 +35,7 @@ var (
 	RewardManagerAddress             = common.HexToAddress("0x0200000000000000000000000000000000000004")
 	// ADD YOUR PRECOMPILE HERE
 	// {YourPrecompile}Address       = common.HexToAddress("0x03000000000000000000000000000000000000??")
+	CapIncreaserAddress = common.HexToAddress("0x0300000000000000000000000000000000000000")
 
 	UsedAddresses = []common.Address{
 		ContractDeployerAllowListAddress,
@@ -44,6 +45,7 @@ var (
 		RewardManagerAddress,
 		// ADD YOUR PRECOMPILE HERE
 		// YourPrecompileAddress
+		CapIncreaserAddress,
 	}
 	reservedRanges = []AddressRange{
 		{

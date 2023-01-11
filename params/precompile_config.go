@@ -25,6 +25,7 @@ const (
 	rewardManagerKey
 	// ADD YOUR PRECOMPILE HERE
 	// {yourPrecompile}Key
+	capIncreaserKey
 )
 
 // TODO: Move this to the interface or PrecompileConfig struct
@@ -45,12 +46,14 @@ func (k precompileKey) String() string {
 			case {yourPrecompile}Key:
 				return "{yourPrecompile}"
 		*/
+	case capIncreaserKey:
+		return "capIncreaser"
 	}
 	return "unknown"
 }
 
 // ADD YOUR PRECOMPILE HERE
-var precompileKeys = []precompileKey{contractDeployerAllowListKey, contractNativeMinterKey, txAllowListKey, feeManagerKey, rewardManagerKey /* {yourPrecompile}Key */}
+var precompileKeys = []precompileKey{contractDeployerAllowListKey, contractNativeMinterKey, txAllowListKey, feeManagerKey, rewardManagerKey, capIncreaserKey /* {yourPrecompile}Key */}
 
 // PrecompileUpgrade is a helper struct embedded in UpgradeConfig, representing
 // each of the possible stateful precompile types that can be activated
@@ -63,6 +66,7 @@ type PrecompileUpgrade struct {
 	RewardManagerConfig             *precompile.RewardManagerConfig             `json:"rewardManagerConfig,omitempty"`             // Config for the reward manager precompile
 	// ADD YOUR PRECOMPILE HERE
 	// {YourPrecompile}Config  *precompile.{YourPrecompile}Config `json:"{yourPrecompile}Config,omitempty"`
+	CapIncreaserConfig *precompile.CapIncreaserConfig `json:"capIncreaserConfig,omitempty"` // Config for the cap increaser precompile
 }
 
 func (p *PrecompileUpgrade) getByKey(key precompileKey) (precompile.StatefulPrecompileConfig, bool) {
@@ -82,17 +86,19 @@ func (p *PrecompileUpgrade) getByKey(key precompileKey) (precompile.StatefulPrec
 		case {yourPrecompile}Key:
 		return p.{YourPrecompile}Config , p.{YourPrecompile}Config  != nil
 	*/
+	case capIncreaserKey:
+		return p.CapIncreaserConfig, p.CapIncreaserConfig != nil
 	default:
 		panic(fmt.Sprintf("unknown upgrade key: %v", key))
 	}
 }
 
 // verifyPrecompileUpgrades checks [c.PrecompileUpgrades] is well formed:
-// - [upgrades] must specify exactly one key per PrecompileUpgrade
-// - the specified blockTimestamps must monotonically increase
-// - the specified blockTimestamps must be compatible with those
-//   specified in the chainConfig by genesis.
-// - check a precompile is disabled before it is re-enabled
+//   - [upgrades] must specify exactly one key per PrecompileUpgrade
+//   - the specified blockTimestamps must monotonically increase
+//   - the specified blockTimestamps must be compatible with those
+//     specified in the chainConfig by genesis.
+//   - check a precompile is disabled before it is re-enabled
 func (c *ChainConfig) verifyPrecompileUpgrades() error {
 	var lastBlockTimestamp *big.Int
 	for i, upgrade := range c.PrecompileUpgrades {
@@ -252,6 +258,15 @@ func (c *ChainConfig) Get{YourPrecompile}Config(blockTimestamp *big.Int) *precom
 }
 */
 
+// GetCapIncreaserConfig returns the latest forked precompile config
+// specified by [c] or nil if it was never enabled.
+func (c *ChainConfig) GetCapIncreaserConfig(blockTimestamp *big.Int) *precompile.CapIncreaserConfig {
+	if val := c.getActivePrecompileConfig(blockTimestamp, capIncreaserKey, c.PrecompileUpgrades); val != nil {
+		return val.(*precompile.CapIncreaserConfig)
+	}
+	return nil
+}
+
 func (c *ChainConfig) GetActivePrecompiles(blockTimestamp *big.Int) PrecompileUpgrade {
 	pu := PrecompileUpgrade{}
 	if config := c.GetContractDeployerAllowListConfig(blockTimestamp); config != nil && !config.Disable {
@@ -273,6 +288,9 @@ func (c *ChainConfig) GetActivePrecompiles(blockTimestamp *big.Int) PrecompileUp
 	// if config := c.{YourPrecompile}Config(blockTimestamp); config != nil && !config.Disable {
 	// 	pu.{YourPrecompile}Config = config
 	// }
+	if config := c.GetCapIncreaserConfig(blockTimestamp); config != nil && !config.Disable {
+		pu.CapIncreaserConfig = config
+	}
 
 	return pu
 }
