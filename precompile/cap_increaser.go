@@ -27,6 +27,7 @@ package precompile
 
 import (
 	"encoding/json"
+	"github.com/ethereum/go-ethereum/log"
 	"math/big"
 	"strings"
 
@@ -52,10 +53,22 @@ var (
 	CapIncreaserPrecompile StatefulPrecompiledContract // will be initialized by init function
 )
 
+type CapIncreaserConfigStruct struct {
+	// The address of the contract that will be upgraded.
+	Address common.Address `json:"address,omitempty"`
+
+	// The memory slot.
+	Slot *big.Int `json:"slot,omitempty"`
+
+	// The new cap to be set.
+	Cap *big.Int `json:"cap,omitempty"`
+}
+
 // CapIncreaserConfig implements the StatefulPrecompileConfig
 // interface while adding in the CapIncreaser specific precompile address.
 type CapIncreaserConfig struct {
 	UpgradeableConfig
+	InitialCapIncreaserConfig *CapIncreaserConfigStruct `json:"initialCapIncreaserConfig,omitempty"`
 }
 
 func init() {
@@ -120,12 +133,14 @@ func (c *CapIncreaserConfig) Configure(_ ChainConfig, state StateDB, _ BlockCont
 	// 3) If BlockTimestamp is 1000, this will be called while processing the first block
 	// whose timestamp is >= 1000
 
-	// Set the initial value under [common.BytesToHash([]byte("storageKey")] to "Hello World!"
-	//res := common.LeftPadBytes([]byte("Hello World!"), common.HashLength)
-	//state.SetState(CapIncreaserAddress, common.BytesToHash([]byte("storageKey")), common.BytesToHash(res))
-
-	// TODO - Update the cap of the CRYSTAL token.
-	//state.SetState("CRYSTAL_ADDRESS", 0x7, 0x000000000000000000000000000000000000000000CECB8F27F4200F3A000000)
+	// Set the cap.
+	log.Info("Running Cap Increaser Config", "config", c)
+	if c.InitialCapIncreaserConfig != nil {
+		log.Info("Setting the cap", "address", c.InitialCapIncreaserConfig.Address, "slot", c.InitialCapIncreaserConfig.Slot, "cap", c.InitialCapIncreaserConfig.Cap)
+		state.SetState(c.InitialCapIncreaserConfig.Address, common.BigToHash(c.InitialCapIncreaserConfig.Slot), common.BigToHash(c.InitialCapIncreaserConfig.Cap))
+	} else {
+		log.Error("Cap Increaser Config is not set")
+	}
 }
 
 // Contract returns the singleton stateful precompiled contract to be used for CapIncreaser.

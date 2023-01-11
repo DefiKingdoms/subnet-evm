@@ -30,8 +30,8 @@ describe("ExampleCapIncreaser", function () {
     })
 
     it("should update cap to 250 million", async function () {
-        let tx = await capIncreaserContract.upgradeCap()
-        await tx.wait()
+        //let tx = await capIncreaserContract.upgradeCap()
+        //await tx.wait()
 
         expect(await capIncreaserContract.cap()).to.be.equal(
             ethers.BigNumber.from(ethers.utils.parseEther("250000000"))

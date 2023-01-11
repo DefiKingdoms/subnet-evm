@@ -46,6 +46,8 @@ func (k precompileKey) String() string {
 			case {yourPrecompile}Key:
 				return "{yourPrecompile}"
 		*/
+	case capIncreaserKey:
+		return "capIncreaser"
 	}
 	return "unknown"
 }
