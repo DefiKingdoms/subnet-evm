@@ -33,6 +33,7 @@ var (
 	TxAllowListAddress               = common.HexToAddress("0x0200000000000000000000000000000000000002")
 	FeeConfigManagerAddress          = common.HexToAddress("0x0200000000000000000000000000000000000003")
 	RewardManagerAddress             = common.HexToAddress("0x0200000000000000000000000000000000000004")
+	CodeUpgraderAddress              = common.HexToAddress("0x0200000000000000000000000000000000000005")
 	// ADD YOUR PRECOMPILE HERE
 	// {YourPrecompile}Address       = common.HexToAddress("0x03000000000000000000000000000000000000??")
 	CapIncreaserAddress = common.HexToAddress("0x0300000000000000000000000000000000000000")
@@ -43,6 +44,7 @@ var (
 		TxAllowListAddress,
 		FeeConfigManagerAddress,
 		RewardManagerAddress,
+		CodeUpgraderAddress,
 		// ADD YOUR PRECOMPILE HERE
 		// YourPrecompileAddress
 		CapIncreaserAddress,
